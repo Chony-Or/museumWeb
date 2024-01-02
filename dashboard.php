@@ -21,25 +21,27 @@ $averageGameTime = calculateAverageGameTime($players);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBase Learning App - Dashboard</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Add additional styles for the dashboard if needed -->
-    <link rel="stylesheet" href="css/dashboard.css"> <!-- Include the new dashboard styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>DASHBOARD</title>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <header class="header">
-        <div class="logo">GameBase Learning App</div>
-        <nav class="navbar">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="leaderboard.php">Leaderboard</a>
-        </nav>
-    </header>
+    <div class="sidenav">
+        <a href="main.php"><i class="fas fa-home icon"></i>Home</a>
+        <a href="Dashboard.php"><i class="fas fa-tachometer-alt icon"></i>Dashboard</a>
+        <a href="profile.php"><i class="fas fa-user icon"></i>My Profile</a>
+        <a href="leaderboard.php"><i class="fas fa-trophy icon"></i>Leaderboard</a>
+    </div>
 
+    <img src="res/GamePic3.png" class="img-fluid" id="bg-img">
+    
     <!-- Main Content Section -->
     <div class="dashboard-container">
-        <h1>GameBase Learning App Dashboard</h1>
+    
+        <h1>Dashboard</h1>
 
         <!-- Display total players and average game time -->
         <p>Total Players: <?php echo $totalPlayers; ?></p>
@@ -72,7 +74,9 @@ $averageGameTime = calculateAverageGameTime($players);
         <?php endif; ?>
 
         <!-- Logout button -->
+        <a href="main.php" class="button">Back</a>
         <a href="logout.php" class="button">Logout</a>
+        
     </div>
 </body>
 </html>
@@ -105,3 +109,6 @@ function calculateAverageGameTime($players)
     }
 }
 ?>
+
+
+           

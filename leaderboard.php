@@ -20,24 +20,27 @@ $players = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBase Learning App - Leaderboard</title>
+
+    <title>LEADERBOARD</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/leaderboard.css">
     <!-- Add additional styles for the leaderboard if needed -->
 </head>
 <body>
     <!-- Header Section -->
-    <header class="header">
-        <div class="logo">GameBase Learning App</div>
-        <nav class="navbar">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="leaderboard.php">Leaderboard</a>
-        </nav>
-    </header>
+    <div class="sidenav">
+        <a href="main.php"><i class="fas fa-home icon"></i>Home</a>
+        <a href="Dashboard.php"><i class="fas fa-tachometer-alt icon"></i>Dashboard</a>
+        <a href="profile.php"><i class="fas fa-user icon"></i>My Profile</a>
+        <a href="leaderboard.php"><i class="fas fa-trophy icon"></i>Leaderboard</a>
+    </div>
+    
+    <img src="res/GamePic3.png" class="img-fluid" id="bg-img">
 
     <div class="leaderboard-container">
-        <h1>GameBase Learning App Leaderboard</h1>
+        <h1>Leaderboard</h1>
 
         <!-- Display player data in a table -->
         <?php if (!empty($players)) : ?>
