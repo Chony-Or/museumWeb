@@ -28,10 +28,20 @@ foreach ($players as $player) {
 
     // Calculate the total game time per section
     if (!isset($sectionData[$section]['totalGameTime'])) {
-        $sectionData[$section]['totalGameTime'] = $player['game_time'];
+        // Convert the time string to a timestamp
+        $sectionData[$section]['totalGameTime'] = strtotime($player['game_time']);
     } else {
-        $sectionData[$section]['totalGameTime'] += $player['game_time'];
+        // Check if the existing value is a valid timestamp before adding to it
+        if (is_numeric($sectionData[$section]['totalGameTime'])) {
+            // Convert the player's game time to a timestamp and add it to the existing value
+            $sectionData[$section]['totalGameTime'] += strtotime($player['game_time']);
+        } else {
+            // Handle the case where the existing value is not a valid timestamp (optional)
+            // For example, set it to the player's game time
+            $sectionData[$section]['totalGameTime'] = strtotime($player['game_time']);
+        }
     }
+    
 }
 
 // Calculate the average game time per section
@@ -91,7 +101,9 @@ foreach ($sectionData as $section => $data) {
             </ul>
 
             <!-- Display pie chart -->
-<canvas id="pieChart" width="300" height="300"></canvas>
+            <div class="canvas-container">
+                 <canvas id="pieChart" width="300" height="300"></canvas>
+            </div>
 
 <script>
     // Create pie chart

@@ -8,6 +8,19 @@
     color: #333;
     text-align: center; /* Center the content */
 }
+#pieChart {
+    width: 100%; /* or specify the width you want */
+    height: 300px; /* Set the desired height */
+    display: block; /* Ensures proper rendering as a block element */
+    margin: 0 auto; /* Center the canvas horizontally if needed */
+}
+
+.canvas-container {
+    width: 100%; /* Set the width of the container */
+    max-width: 500px; /* Set a maximum width if needed */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
 
 /* Table Styles */
 table {
