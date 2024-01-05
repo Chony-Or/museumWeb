@@ -6,13 +6,39 @@ include('includes/db_connect.php');
 include('includes/authenticate.php');
 
 // Fetch player data from the database
-$sql = "SELECT id, username, game_time_started, game_time_completed FROM students";
+$sql = "SELECT id, firstName, lastName, student_section, game_time FROM students";
 $result = $conn->query($sql);
 $players = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
 
-// Calculate total players and average game time
+// Calculate total players
 $totalPlayers = count($players);
-$averageGameTime = calculateAverageGameTime($players);
+
+// Calculate the count of students and average game time per section
+$sectionData = []; // Array to store section-wise data
+
+foreach ($players as $player) {
+    $section = $player['student_section'];
+
+    // Count the number of students per section
+    if (!isset($sectionData[$section]['count'])) {
+        $sectionData[$section]['count'] = 1;
+    } else {
+        $sectionData[$section]['count']++;
+    }
+
+    // Calculate the total game time per section
+    if (!isset($sectionData[$section]['totalGameTime'])) {
+        $sectionData[$section]['totalGameTime'] = $player['game_time'];
+    } else {
+        $sectionData[$section]['totalGameTime'] += $player['game_time'];
+    }
+}
+
+// Calculate the average game time per section
+foreach ($sectionData as $section => $data) {
+    $sectionData[$section]['averageGameTime'] = ($data['count'] > 0) ? $data['totalGameTime'] / $data['count'] : "N/A";
+}
+
 
 // HTML Document
 ?>
@@ -24,6 +50,9 @@ $averageGameTime = calculateAverageGameTime($players);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <title>DASHBOARD</title>
 </head>
@@ -43,72 +72,67 @@ $averageGameTime = calculateAverageGameTime($players);
     
         <h1>Dashboard</h1>
 
-        <!-- Display total players and average game time -->
+        <!-- Display total players -->
         <p>Total Players: <?php echo $totalPlayers; ?></p>
-        <p>Average Game Time: <?php echo $averageGameTime; ?></p>
 
-        <!-- Display player data in a table -->
-        <?php if (!empty($players)) : ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Game Time Started</th>
-                        <th>Game Time Completed</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($players as $player) : ?>
-                        <tr>
-                            <td><?php echo $player['id']; ?></td>
-                            <td><?php echo $player['username']; ?></td>
-                            <td><?php echo $player['game_time_started']; ?></td>
-                            <td><?php echo $player['game_time_completed']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php else : ?>
-            <p>No players found.</p>
-        <?php endif; ?>
+        <!-- Display count of students and average game time per section -->
+        <?php if (!empty($sectionData)) : ?>
+            <h2>Section-wise Data:</h2>
+            <ul>
+                <?php foreach ($sectionData as $section => $data) : ?>
+                    <li>
+                        Section <?php echo $section; ?>:
+                        <ul>
+                            <li>Number of Students: <?php echo $data['count']; ?></li>
+                            <li>Average Game Time: <?php echo $data['averageGameTime']; ?></li>
+                        </ul>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
 
-        <!-- Logout button -->
-        <a href="main.php" class="button">Back</a>
-        <a href="logout.php" class="button">Logout</a>
-        
-    </div>
+            <!-- Display pie chart -->
+<canvas id="pieChart" width="300" height="300"></canvas>
+
+<script>
+    // Create pie chart
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: <?php echo json_encode(array_keys($sectionData)); ?>,
+            datasets: [{
+                data: <?php echo json_encode(array_column($sectionData, 'count')); ?>,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)',
+                ],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Student Distribution by Section',
+                fontSize: 16,
+            },
+        },
+    });
+</script>
+
+<?php else : ?>
+    <p>No players found.</p>
+<?php endif; ?>
+
+<!-- Logout button -->
+<a href="main.php" class="button">Back</a>
+<a href="logout.php" class="button">Logout</a>
+
+</div>
 </body>
 </html>
 
-<?php
-// Function to calculate average game time
-function calculateAverageGameTime($players)
-{
-    if (empty($players)) {
-        return 'N/A';
-    }
-
-    $totalGameTime = 0;
-
-    foreach ($players as $player) {
-        $startTime = strtotime($player['game_time_started']);
-        $endTime = strtotime($player['game_time_completed']);
-
-        // Check if both start and end times are valid
-        if ($startTime !== false && $endTime !== false) {
-            $totalGameTime += ($endTime - $startTime);
-        }
-    }
-
-    if ($totalGameTime > 0) {
-        $averageGameTimeSeconds = $totalGameTime / count($players);
-        return gmdate("H:i:s", $averageGameTimeSeconds);
-    } else {
-        return 'N/A';
-    }
-}
-?>
-
-
-           

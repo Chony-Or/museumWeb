@@ -13,7 +13,7 @@ include('includes/authenticate.php');
 //}
 
 // Fetch all student data from the database
-$sql = "SELECT id, username, game_time_started, game_time_completed FROM students";
+$sql = "SELECT id, firstName, lastName, game_time FROM students";
 $result = $conn->query($sql);
 $studentsData = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -51,18 +51,16 @@ $studentsData = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Username</th>
-                        <th>Game Time Started</th>
-                        <th>Game Time Completed</th>
+                        <th>Student Name</th>
+                        <th>Game Time</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($studentsData as $student) : ?>
                         <tr>
                             <td><?php echo $student['id']; ?></td>
-                            <td><?php echo $student['username']; ?></td>
-                            <td><?php echo $student['game_time_started']; ?></td>
-                            <td><?php echo $student['game_time_completed']; ?></td>
+                            <td><?php echo $student['firstName'] . ' ' . $student['lastName']; ?></td>
+                            <td><?php echo $student['game_time']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
